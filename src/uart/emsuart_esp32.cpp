@@ -80,7 +80,7 @@ void EMSuart::start(const uint8_t tx_mode, const uint8_t rx_gpio, const uint8_t 
                                      .stop_bits           = UART_STOP_BITS_1,
                                      .flow_ctrl           = UART_HW_FLOWCTRL_DISABLE,
                                      .rx_flow_ctrl_thresh = 0,
-                                     .source_clk          = UART_SCLK_APB
+                                     .source_clk          = UART_SCLK_RTC
 #if ESP_ARDUINO_VERSION_MAJOR >= 3
                                      ,
                                      .flags = {0, 0}
