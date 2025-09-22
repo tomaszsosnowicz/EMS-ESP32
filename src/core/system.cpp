@@ -435,7 +435,7 @@ bool System::is_valid_gpio(uint8_t pin, bool has_psram) {
         || ((EMSESP::system_.PSram() > 0 || has_psram) && pin >= 16 && pin <= 17)) {
 #elif CONFIG_IDF_TARGET_ESP32S2
     if ((pin >= 19 && pin <= 20) || (pin >= 22 && pin <= 32) || (pin > 40)) {
-#elif CONFIG_IDF_TARGET_ESP32C3
+#elif CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32C6
     // https://www.wemos.cc/en/latest/c3/c3_mini.html
     if ((pin >= 11 && pin <= 19) || (pin > 21)) {
 #elif CONFIG_IDF_TARGET_ESP32S3
@@ -469,7 +469,7 @@ void System::start() {
     appused_ = ESP.getSketchSize() / 1024;
     appfree_ = esp_ota_get_running_partition()->size / 1024 - appused_;
     refreshHeapMem(); // refresh free heap and max alloc heap
-#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2
+#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32C6
 #if ESP_IDF_VERSION_MAJOR < 5
     temp_sensor_config_t temp_sensor = TSENS_CONFIG_DEFAULT();
     temp_sensor_get_config(&temp_sensor);
@@ -710,7 +710,7 @@ void System::heartbeat_json(JsonObject output) {
 #ifndef EMSESP_STANDALONE
     output["freemem"]   = getHeapMem();
     output["max_alloc"] = getMaxAllocMem();
-#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32
+#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32 || CONFIG_IDF_TARGET_ESP32C6
     output["temperature"] = (int)temperature_;
 #endif
 #endif
@@ -793,7 +793,7 @@ void System::system_check() {
         last_system_check_ = uuid::get_uptime();
 
 #ifndef EMSESP_STANDALONE
-#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2
+#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32C6
 #if ESP_IDF_VERSION_MAJOR < 5
         temp_sensor_read_celsius(&temperature_);
 #else
@@ -1035,7 +1035,7 @@ void System::show_system(uuid::console::Shell & shell) {
 
     shell.printfln(" SDK version: %s", ESP.getSdkVersion());
     shell.printfln(" CPU frequency: %lu MHz", ESP.getCpuFreqMHz());
-#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2
+#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32C6
     shell.printfln(" CPU temperature: %d °C", (int)temperature());
 #endif
     shell.printfln(" Free heap/Max alloc: %lu KB / %lu KB", getHeapMem(), getMaxAllocMem());
@@ -1585,7 +1585,7 @@ bool System::command_info(const char * value, const int8_t id, JsonObject output
         node["freePsram"] = ESP.getFreePsram() / 1024;
     }
     node["model"] = EMSESP::system_.getBBQKeesGatewayDetails();
-#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2
+#if CONFIG_IDF_TARGET_ESP32S3 || CONFIG_IDF_TARGET_ESP32C3 || CONFIG_IDF_TARGET_ESP32S2 || CONFIG_IDF_TARGET_ESP32C6
     node["temperature"] = EMSESP::system_.temperature();
 #endif
 
